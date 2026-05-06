@@ -3,25 +3,30 @@ const multer = require("multer");
 const path = require("path");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// 🔥 storage setup
+// upload
 const storage = multer.diskStorage({
   destination: "./uploads/",
   filename: (req, file, cb)=>{
     cb(null, Date.now() + path.extname(file.originalname));
   }
 });
-
 const upload = multer({ storage });
 
-// 🔥 upload API
 app.post("/upload", upload.single("image"), (req, res)=>{
   res.json({
     imageUrl: "/uploads/" + req.file.filename
   });
 });
 
-// 🔥 static folder
+// static files
 app.use("/uploads", express.static("uploads"));
+app.use(express.static(__dirname));
 
-app.listen(3000, ()=>console.log("Server running on 3000"));
+// 🔥 HOME FIX
+app.get("/", (req, res)=>{
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.listen(PORT, ()=>console.log("Server running"));
