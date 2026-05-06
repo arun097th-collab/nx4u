@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Demonic Slash</title>
+<title>NX4U</title>
 
 <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
 
@@ -243,7 +243,14 @@ body{background:#000;color:#fff;}
   background:radial-gradient(circle at 70% 30%, rgba(255,255,255,0.15), transparent 60%);
 }
 
-
+#detailImg{
+  width:140px;
+  height:200px;
+  object-fit:cover;
+  border-radius:10px;
+  display:block;
+  margin:10px auto;
+}
 
 @keyframes zoomHero{
   from{
@@ -368,14 +375,17 @@ video{width:100%;height:80%;}
   <div class="heroLine"></div>
 
   <div class="detailOverlay">
-    <h2 id="detailTitle"></h2>
 
-    <div class="actionButtons">
-      <button class="playBtn" onclick="playMovie()">▶ Play</button>
-      <button onclick="downloadMovie()">⬇ Download</button>
-      <button onclick="backHome()">⬅ Back</button>
-    </div>
+  <img id="detailImg">
+
+  <h2 id="detailTitle"></h2>
+
+  <div class="actionButtons">
+    <button class="playBtn" onclick="playMovie()">▶ Play</button>
+    <button onclick="downloadMovie()">⬇ Download</button>
   </div>
+
+</div>
 
 <div class="seasonBar">
   <select id="seasonSelect" onchange="changeSeason()"></select>
@@ -520,7 +530,9 @@ function openDetail(m){
 
   document.getElementById("detailTitle").innerText = movie.title;
 
-  // 🔥 ADD
+  // 🔥 IMAGE FIX
+  document.getElementById("detailImg").src = movie.img;
+
   loadSeasons();
   loadEpisodes(1);
 }
