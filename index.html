@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demonic Slash</title>
+
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+body{background:#000;color:#fff;}
+
+/* NAVBAR */
+.navbar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+
+  display:flex;
+  align-items:center;
+  gap:15px;
+
+  padding:10px 15px;
+
+  /* 🔥 GLASS EFFECT */
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+
+  border-bottom:1px solid rgba(255,255,255,0.1);
+
+  z-index:1000;
+}
+#navControls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1;
+}
+
+/* category left side */
+.categoryBar{
+  display:flex;
+  gap:8px;
+}
+
+/* search right side */
+#search_input{
+  margin-left:auto; /* 🔥 push right */
+  width:180px;
+}
+/* LOGO */
+.logo{
+  font-family:'UnifrakturCook';
+  font-size:20px;
+}
+
+/* CATEGORY */
+.categoryBar{
+  display:flex;
+  gap:8px;
+}
+
+
+.categoryBar button{
+  padding:6px 12px;
+  border-radius:20px;
+
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(6px);
+
+  border:1px solid rgba(255,255,255,0.15);
+  color:#fff;
+
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.categoryBar button:hover{
+  background:rgba(255,255,255,0.2);
+  transform:scale(1.05);
+}
+
+/* SEARCH */
+#search_input{
+  margin-left:auto; /* 🔥 push right */
+  padding:6px 10px;
+  border-radius:20px;
+  border:1px solid #444;
+  background:#111;
+  color:#fff;
+  width:180px;
+}
+
+
+
+/* HERO */
+.hero{
+  margin-top:60px;
+}
+
+.hero{height:100vh;position:relative;}
+.heroBg{
+  position:absolute;inset:0;
+  background:url('img/money heist.jpg') center/cover no-repeat;
+  filter:brightness(0.6);
+}
+.hero::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to right,#000 30%,transparent);
+}
+.heroContent{
+  position:relative;z-index:2;
+  height:100%;display:flex;flex-direction:column;
+  justify-content:center;padding:40px;
+}
+.heroContent h1{
+  font-family:'UnifrakturCook';
+  font-size:50px;
+}
+
+/* BUTTONS */
+.actionButtons{display:flex;gap:10px;margin-top:15px;}
+.actionButtons button{
+  padding:8px 14px;
+  border-radius:6px;
+  border:1px solid #444;
+  background:#111;
+  color:#fff;
+  cursor:pointer;
+  font-size:14px;
+  transition:all 0.3s ease;
+}
+.actionButtons button:hover{
+  transform:translateY(-2px) scale(1.03);
+  box-shadow:0 0 12px rgba(255,255,255,0.15);
+}
+.playBtn{
+  background:#fff;color:#000;border:none;
+}
+.playBtn:hover{
+  box-shadow:0 0 15px rgba(255,255,255,0.4);
+}
+
+/* MOVIES */
+.movies{padding:80px 20px;}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+/* CARD */
+.card{
+  position:relative;
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+
+  /* 🔥 GLASS EFFECT */
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+
+  border:1px solid rgba(255,255,255,0.1);
+
+  transition:0.3s;
+}
+.card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:50%;
+  height:100%;
+  background:linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.2),
+    transparent
+  );
+  transition:0.5s;
+}
+
+.card:hover::before{
+  left:100%;
+}
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+}
+.card:hover{
+  transform:translateY(-4px) scale(1.02);
+
+  box-shadow:0 10px 25px rgba(0,0,0,0.6);
+}
+.card:hover img{
+  transform:scale(1.1);
+}
+.cardTitle{
+  padding:10px;
+  text-align:center;
+  font-size:14px;
+
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(6px);
+
+  border-top:1px solid rgba(255,255,255,0.1);
+}
+.card:hover .cardTitle{
+  text-shadow:0 0 10px rgba(255,255,255,0.3);
+}
+
+/* DETAIL */
+#detailPage{display:none;}
+#detailHero{
+  height:45vh;
+  width:100%;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+  display:flex;
+  align-items:flex-end; /* 🔥 bottom align */
+  padding:20px;
+}
+
+/* 🔥 DARK GRADIENT (cinematic) */
+#detailHero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top, #000 10%, transparent 60%);
+}
+
+/* 🔥 LIGHT GLOW EFFECT */
+#detailHero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 70% 30%, rgba(255,255,255,0.15), transparent 60%);
+}
+
+
+
+@keyframes zoomHero{
+  from{
+    transform:scale(1.1);
+  }
+  to{
+    transform:scale(1);
+  }
+}
+
+/* 🔥 TITLE EFFECT */
+#detailTitle{
+  font-size:28px;
+  font-weight:bold;
+  color:#fff;
+  text-shadow:0 0 15px rgba(0,0,0,0.8);
+  margin:0;
+  position:relative; /* 🔥 remove absolute */
+}
+
+
+/* extra glow line */
+.heroLine{
+  height:3px;
+  width:100%;
+  
+ 
+}
+.detailOverlay{padding:20px;}
+
+/* SEASON */
+.seasonBar{padding:10px 20px;}
+#seasonSelect{
+  padding:6px 10px;
+  background:#111;
+  color:#fff;
+  border:1px solid #444;
+  border-radius:4px;
+}
+
+/* EPISODES */
+.episodes{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding:20px;
+}
+.epCard{
+  min-width:160px;
+  background:#111;
+  border-radius:6px;
+  border:1px solid #333;
+  transition:0.3s;
+}
+.epCard img{
+  width:100%;
+  height:100px;
+  object-fit:cover;
+}
+.epCard:hover{
+  transform:translateY(-3px);
+  background:#1f1f1f;
+  box-shadow:0 0 10px rgba(255,255,255,0.1);
+}
+.epCard p{
+  padding:8px;
+  font-size:13px;
+  color:#ccc;
+}
+
+/* VIDEO */
+#videoPlayer{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000;
+}
+video{width:100%;height:80%;}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+
+  <div class="logo">NX</div>
+
+  <!-- 🔥 WRAP -->
+  <div id="navControls">
+    <div class="categoryBar">
+      <button onclick="filterCategory('Anime')">Anime</button>
+      <button onclick="filterCategory('Movie')">Movies</button>
+      <button onclick="filterCategory('Series')">Series</button>
+    </div>
+
+    <input id="search_input" placeholder="Search...">
+  </div>
+
+</div>
+
+<!-- HERO -->
+<div class="hero" id="heroSection">
+  <div class="heroBg"></div>
+  <div class="heroContent">
+    <h1>Demon Slayer</h1>
+
+    <div class="actionButtons">
+      <button class="playBtn" onclick="playHero()">▶ Play</button>
+      <button onclick="openDemonDetail()">⬇ Download</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOVIES -->
+<div class="movies">
+  <div class="grid" id="movieContainer"></div>
+</div>
+
+<!-- DETAIL -->
+<div id="detailPage">
+  <div id="detailHero"></div>
+  <div class="heroLine"></div>
+
+  <div class="detailOverlay">
+    <h2 id="detailTitle"></h2>
+
+    <div class="actionButtons">
+      <button class="playBtn" onclick="playMovie()">▶ Play</button>
+      <button onclick="downloadMovie()">⬇ Download</button>
+      <button onclick="backHome()">⬅ Back</button>
+    </div>
+  </div>
+
+<div class="seasonBar">
+  <select id="seasonSelect" onchange="changeSeason()"></select>
+</div>
+
+<div id="episodeSection">
+  <div class="episodes" id="episodeList"></div>
+</div>
+  
+  <div id="episodeSection">
+  <div class="episodes" id="episodeList"></div>
+</div>
+</div>
+
+<!-- VIDEO -->
+<div id="videoPlayer">
+  <video id="video" controls></video>
+  <button onclick="closeVideo()">Close</button>
+</div>
+
+<script>
+
+// 🔥 GLOBAL
+let currentMovie = null;
+
+// 🔥 GET MOVIES (SAFE)
+function getMovies(){
+  try{
+    return JSON.parse(localStorage.getItem("movies")) || [];
+  }catch(e){
+    return [];
+  }
+}
+
+function filterCategory(cat){
+
+  document.querySelectorAll(".categoryBar button")
+    .forEach(b=>b.classList.remove("active"));
+
+  event.target.classList.add("active");
+
+  let data = getMovies();
+
+  if(cat === "All"){
+    renderMovies(data);
+    return;
+  }
+
+  let filtered = data.filter(m =>
+    (m.category || "").toLowerCase() === cat.toLowerCase()
+  );
+
+  renderMovies(filtered);
+}
+function loadSeasons(){
+
+  let select = document.getElementById("seasonSelect");
+
+  if(!select) return;
+
+  select.innerHTML = "";
+
+  let movie = currentMovie;
+
+  if(movie && movie.seasons){
+
+    let keys = Object.keys(movie.seasons);
+
+    if(keys.length === 0){
+      select.style.display = "none";
+      return;
+    }
+
+    select.style.display = "block";
+
+    keys.forEach(s=>{
+      select.innerHTML += `<option value="${s}">Season ${s}</option>`;
+    });
+
+  }else{
+    select.style.display = "none";
+  }
+}
+// 🔥 RENDER MOVIES
+function renderMovies(list){
+  let container = document.getElementById("movieContainer");
+  if(!container) return;
+
+  container.innerHTML = "";
+
+  if(!list || list.length === 0){
+    container.innerHTML = "<p style='padding:20px'>No Movies Found</p>";
+    return;
+  }
+
+  list.forEach(m=>{
+    let img = m.img || "https://via.placeholder.com/300x200";
+
+    container.innerHTML += `
+      <div class="card" onclick='openDetail(${JSON.stringify(m)})'>
+        <img src="${img}">
+        <div class="cardTitle">${m.title}</div>
+      </div>
+    `;
+  });
+}
+
+// 🔥 SEARCH
+document.addEventListener("DOMContentLoaded", ()=>{
+
+  // 🔍 SEARCH FIX
+  const input = document.getElementById("search_input");
+
+  if(input){
+    input.addEventListener("keyup", ()=>{
+      let val = input.value.toLowerCase();
+      let data = getMovies();
+
+      let filtered = data.filter(m =>
+        m.title.toLowerCase().includes(val)
+      );
+
+      renderMovies(filtered);
+    });
+  }
+
+  // 🔥 LOAD MOVIES
+  renderMovies(getMovies());
+
+});
+// 🔥 OPEN DETAIL
+function openDetail(m){
+
+  let data = getMovies();
+  let movie = data.find(x => x.title === m.title) || m;
+
+  currentMovie = movie;
+
+  document.querySelector(".movies").style.display="none";
+  document.getElementById("heroSection").style.display="none";
+  document.getElementById("detailPage").style.display="block";
+
+  document.getElementById("detailTitle").innerText = movie.title;
+
+  // 🔥 ADD
+  loadSeasons();
+  loadEpisodes(1);
+}
+
+
+// 🔥 LOAD EPISODES
+function loadEpisodes(season=1){
+  try{
+
+    let data = getMovies();
+    let movie = data.find(m => m.title === currentMovie.title);
+
+    let section = document.getElementById("episodeSection");
+    let list = document.getElementById("episodeList");
+
+    if(!section || !list) return;
+
+    let html = "";
+
+    if(movie && movie.seasons && movie.seasons[season]){
+      section.style.display = "block";
+
+      movie.seasons[season].forEach(ep=>{
+        html += `
+        <div class="epCard" onclick="playEpisode('${ep.link}')">
+          <img src="${movie.img}">
+          <p>Episode ${ep.ep}</p>
+        </div>`;
+      });
+
+    }else{
+      section.style.display = "none";
+    }
+
+    list.innerHTML = html;
+
+  }catch(e){
+    console.log("Episode Error:", e);
+  }
+}
+
+// 🔥 PLAY MOVIE
+function playMovie(){
+  if(!currentMovie) return;
+
+  document.getElementById("videoPlayer").style.display="block";
+  document.getElementById("video").src = currentMovie.video;
+}
+
+function playHero(){
+  playMovie();
+}
+
+// 🔥 PLAY EPISODE
+function playEpisode(link){
+  if(!link){
+    alert("No link found");
+    return;
+  }
+
+  // 🔥 direct open
+  window.open(link, "_blank");
+}
+
+// 🔥 DOWNLOAD (ADMIN LINK)
+function downloadMovie(){
+  if(currentMovie && currentMovie.download){
+    window.open(currentMovie.download, "_blank");
+  }else{
+    alert("No download link");
+  }
+}
+
+// 🔥 BACK
+function backHome(){
+  document.querySelector(".movies").style.display="block";
+  document.getElementById("heroSection").style.display="block";
+  document.getElementById("detailPage").style.display="none";
+  document.getElementById("navControls").style.display = "flex";
+}
+
+// 🔥 SEASON CHANGE
+function changeSeason(){
+  let s = document.getElementById("seasonSelect").value;
+  loadEpisodes(s);
+}
+
+// 🔥 CLOSE VIDEO
+function closeVideo(){
+  document.getElementById("videoPlayer").style.display="none";
+}
+
+// 🔥 PAGE LOAD (IMPORTANT)
+window.onload = function(){
+  renderMovies(getMovies());
+};
+
+</script>
+</body>
+</html>

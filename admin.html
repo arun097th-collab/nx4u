@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+
+<style>
+body{
+  background:#000;
+  color:#fff;
+  font-family:sans-serif;
+  padding:20px;
+}
+
+input,select,button{
+  display:block;
+  margin:10px 0;
+  padding:10px;
+  width:100%;
+  background:#111;
+  color:#fff;
+  border:1px solid #444;
+  border-radius:5px;
+}
+
+button{cursor:pointer;background:#222;}
+
+.card{
+  border:1px solid #333;
+  padding:10px;
+  margin-top:10px;
+}
+
+/* 🔥 IMAGE PREVIEW */
+#preview{
+  width:120px;
+  height:150px;
+  object-fit:cover;
+  border-radius:8px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Admin Panel</h2>
+
+<input id="titleInput" placeholder="Movie Title">
+<input id="imgInput" placeholder="Image URL">
+
+<!-- 🔥 UPLOAD -->
+<input type="file" id="imgFile">
+<button onclick="uploadImage()">Upload Image</button>
+
+<img id="preview">
+
+<input id="videoInput" placeholder="Main Video Link">
+<input id="downloadInput" placeholder="Download Link">
+
+<select id="categoryInput">
+  <option value="Anime">Anime</option>
+  <option value="Movie">Movie</option>
+  <option value="Series">Series</option>
+</select>
+
+<hr>
+
+<h3>Episode Add</h3>
+
+<input id="seasonInput" placeholder="Season (1,2)">
+<input id="episodeInput" placeholder="Episode Number">
+<input id="linkInput" placeholder="Episode Link">
+
+<button onclick="addOrUpdate()">Save Movie / Episode</button>
+
+<hr>
+
+<h3>Saved Movies</h3>
+<div id="list"></div>
+
+<script>
+
+// 🔥 GET / SAVE
+function getMovies(){
+  return JSON.parse(localStorage.getItem("movies")) || [];
+}
+function saveMovies(data){
+  localStorage.setItem("movies", JSON.stringify(data));
+}
+
+// 🔥 IMAGE UPLOAD
+async function uploadImage(){
+
+  let file = document.getElementById("imgFile").files[0];
+
+  if(!file){
+    alert("Select image first");
+    return;
+  }
+
+  let formData = new FormData();
+  formData.append("image", file);
+
+  let res = await fetch("/upload", {
+    method:"POST",
+    body:formData
+  });
+
+  let data = await res.json();
+
+  let fullUrl = window.location.origin + data.imageUrl;
+
+  document.getElementById("imgInput").value = fullUrl;
+
+  // 🔥 preview
+  document.getElementById("preview").src = fullUrl;
+
+  alert("Uploaded ✅");
+}
+
+// 🔥 ADD / UPDATE
+function addOrUpdate(){
+
+  let title = titleInput.value.trim();
+  let img = imgInput.value.trim();
+  let video = videoInput.value.trim();
+  let download = downloadInput.value.trim();
+  let category = categoryInput.value;
+
+  let season = seasonInput.value.trim();
+  let episode = episodeInput.value.trim();
+  let link = linkInput.value.trim();
+
+  if(!title){
+    alert("Title required");
+    return;
+  }
+
+  let movies = getMovies();
+
+  let movie = movies.find(m => m.title === title);
+
+  if(!movie){
+    movie = {
+      title,
+      img,
+      video,
+      download,
+      category,
+      seasons:{}
+    };
+    movies.push(movie);
+  }
+
+  movie.img = img;
+  movie.video = video;
+  movie.download = download;
+  movie.category = category;
+
+  // 🔥 EPISODE
+  if(season && episode && link){
+
+    if(!movie.seasons[season]){
+      movie.seasons[season] = [];
+    }
+
+    let existing = movie.seasons[season].find(e => e.ep == episode);
+
+    if(existing){
+      existing.link = link;
+    }else{
+      movie.seasons[season].push({ep:episode, link});
+    }
+  }
+
+  saveMovies(movies);
+
+  alert("Saved ✅");
+
+  loadList();
+}
+
+// 🔥 LIST
+function loadList(){
+
+  let list = document.getElementById("list");
+  let movies = getMovies();
+
+  list.innerHTML = "";
+
+  movies.forEach(m=>{
+
+    let div = document.createElement("div");
+    div.className="card";
+
+    div.innerHTML = `
+      <b>${m.title}</b> (${m.category})
+      <br>
+      <img src="${m.img}" width="80">
+      <br>
+      <button onclick='editMovie(${JSON.stringify(m)})'>Edit</button>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+// 🔥 EDIT
+function editMovie(m){
+
+  titleInput.value = m.title;
+  imgInput.value = m.img;
+  videoInput.value = m.video;
+  downloadInput.value = m.download;
+
+  categoryInput.value = m.category || "Movie";
+
+  document.getElementById("preview").src = m.img;
+}
+
+// 🔥 INIT
+loadList();
+
+</script>
+
+</body>
+</html>
